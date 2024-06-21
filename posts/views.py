@@ -12,20 +12,20 @@ class IndexView(View):
 
     def post(self, request, *args, **kwargs):
         form = PostForm(request.POST)
-        if form.is_valid():
-            form.save()
-            return redirect('posts:index')
+        print(form)
+        post = form.save()
+        return JsonResponse({
+          'content': post.content,
+          'created_at': post.created_at.strftime('%Y-%m-%d %H:%M:%S')
+      })
 
 class CreateView(View):
-    def get(self, request, *args, **kwargs):
-        form = PostForm()
-        return render(request, 'posts/create.html', {'form': form})
-    
-    def post(self, request, *args, **kwargs):
-        form = PostForm(request.POST)
-        if form.is_valid():
-            post = form.save()
-            return JsonResponse({
-             'content': post.content,
-             'created_at': post.created_at.strftime('%Y-%m-%d %H:%M:%S')
-      })
+   def get(self, request, *args, **kwargs):
+     form = PostForm()
+     return render(request, 'posts/create.html', {'form': form})
+
+   def post(self, request, *args, **kwargs):
+     form = PostForm(request.POST)
+     if form.is_valid():
+       form.save()
+       return redirect('posts:index')
